@@ -6,6 +6,7 @@ Will get into bluetooth and a few other advanced/interesting topics.
 
 
 ## References to read/work on next
+* [Intent Refresher](http://developer.android.com/reference/android/content/Intent.html)
 * Probably [Layouts](http://developer.android.com/guide/topics/ui/declaring-layout.html)
 * [Bluetooth](http://developer.android.com/guide/topics/connectivity/bluetooth.html) and [class ref](http://developer.android.com/reference/android/bluetooth/package-summary.html)
 * [Platform versions?](http://developer.android.com/training/basics/supporting-devices/platforms.html)
