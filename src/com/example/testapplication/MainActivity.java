@@ -1,6 +1,7 @@
 package com.example.testapplication;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,11 +13,26 @@ import android.widget.EditText;
 public class MainActivity extends Activity {
 	
 	public final static String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE"; // good practice to use app name as a key
+	public final static Integer REQUEST_ENABLE_BT = 1; // good practice to use app name as a key
 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		if (mBluetoothAdapter == null){
+			// device does not support bluetooth... that's lame
+			Log.e("MainActivity", "no bluetooth");
+		}
+		
+		if (!mBluetoothAdapter.isEnabled()){
+			Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+		}
+		
+		
 	}
 
 	@Override

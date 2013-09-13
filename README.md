@@ -6,11 +6,16 @@ Will get into bluetooth, networking, authentication (consuming a rails+devise en
 
 
 ## References to read/work on next
+* [Lifecycle](http://developer.android.com/training/basics/activity-lifecycle/starting.html)
 * Probably [Layouts](http://developer.android.com/guide/topics/ui/declaring-layout.html)
-* [Bluetooth](http://developer.android.com/guide/topics/connectivity/bluetooth.html) and [class ref](http://developer.android.com/reference/android/bluetooth/package-summary.html)
 * [Platform versions?](http://developer.android.com/training/basics/supporting-devices/platforms.html)
 * [Location](http://developer.android.com/training/building-userinfo.html)
 * [Networking](http://developer.android.com/training/basics/network-ops/connecting.html)
+
+### [Bluetooth]
+* [Bluetooth](http://developer.android.com/guide/topics/connectivity/bluetooth.html) and [class ref](http://developer.android.com/reference/android/bluetooth/package-summary.html)
+* [Health](http://developer.android.com/reference/android/bluetooth/BluetoothHealth.html)
+* [Health Device Profile](http://en.wikipedia.org/wiki/Bluetooth_profile#Health_Device_Profile_.28HDP.29)
 
 ### Services and Threading
 * <http://developer.android.com/reference/android/app/Service.html>
