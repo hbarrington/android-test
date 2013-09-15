@@ -10,4 +10,14 @@
     <string name="hello_world">Hello world!</string>
     <string name="sign_out">I\'m out!</string>
 
+    <string name="title_connecting">connecting#8230;</string>
+    <string name="title_not_connected">not connected</string>
+    <string name="title_connected_to">connected to someone</string>
+    <!--<string name="title_connected_to">connected to <xliff:g id="device_name">%1$s</xliff:g></string>
+       -->
+    <string name="bt_not_enabled_leaving">Bluetooth was not enabled. Leaving Bluetooth Chat.</string>
+
+
+    
+    
 </resources>
