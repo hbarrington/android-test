@@ -40,8 +40,7 @@ public class MainActivity extends Activity {
     public static final int MESSAGE_TOAST = 5;
     
     // Intent request codes
-    private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
-    private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
+    private static final int REQUEST_CONNECT_DEVICE = 1;
     private static final int REQUEST_ENABLE_BT = 3;
     
     
@@ -78,18 +77,18 @@ public class MainActivity extends Activity {
 	public void onStart() {
 		super.onStart();
 		
-		if(DEBUG) Log.e("MainActivity", "++ ON START ++");
+		if(DEBUG) Log.d("MainActivity", "++ ON START ++");
 
         // If BT is not on, request that it be enabled.
-        // setupChat() will then be called during onActivityResult
+        //  will then be called during onActivityResult
         if (!mBluetoothAdapter.isEnabled()) {
         	Log.v("MainActivity", "not enabled");
 
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-        // Otherwise, setup the chat session
+  
         } else {
-        	Log.v("MainActivity", "enabled");
+        	Log.i("MainActivity", "bluetooth enabled");
 
         	//setup data grabbing
             //if (mChatService == null) setupChat();
@@ -118,7 +117,7 @@ public class MainActivity extends Activity {
               mDataService.start();
             }
         }
-        connectDevice(new Intent(), false);
+        //connectDevice(new Intent(), true);
     }
 	
 	
@@ -133,6 +132,9 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle presses on the action bar items
+		
+		Intent intent = null;
+		
 	    switch (item.getItemId()) {
 	        case R.id.sign_out:
 	        	//should have a real function called... or something
@@ -142,18 +144,14 @@ public class MainActivity extends Activity {
 	            //openSettings();
 	            Log.v("MainActivity", "Settings?");
 	            return true;
+	        case R.id.devices:
+	        	Log.v("MainActivity", "Devices");
+	        	intent = new Intent(this, ConnectToDevice.class);
+	        	startActivityForResult(intent, REQUEST_CONNECT_DEVICE);
+	        	return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
-	}
-	
-	/* send a message when the user clicks a button */
-	public void sendMessage(View view){
-		Intent intent = new Intent(this, DisplayMessageActivity.class);
-		EditText editText = (EditText) findViewById(R.id.edit_message);
-		String message = editText.getText().toString();
-		intent.putExtra(EXTRA_MESSAGE, message);
-		startActivity(intent);
 	}
 	
 	
@@ -170,6 +168,70 @@ public class MainActivity extends Activity {
         //actionBar.setSubtitle(subTitle);
     }
 	
+
+	
+	
+	
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(DEBUG) Log.d("MainActivity", "onActivityResult " + resultCode);
+        switch (requestCode) {
+
+        case REQUEST_CONNECT_DEVICE:
+            // When ConnectToDevice returns with a device to connect
+            if (resultCode == Activity.RESULT_OK) {
+                connectDevice(data, false); //or true?
+            }
+            break;
+        case REQUEST_ENABLE_BT:
+            // When the request to enable Bluetooth returns
+            if (resultCode == Activity.RESULT_OK) {
+                // Bluetooth is now enabled, start pulling data
+                mDataService = new BluetoothDataReceptionService(this, mHandler);
+            } else {
+                // User did not enable Bluetooth or an error occurred
+                Log.d("MainActivity", "BT not enabled");
+                Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
+    }
+	
+	
+
+    private void connectDevice(Intent data, boolean secure) {
+        // Get the device MAC address
+        //String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+        // Get the BluetoothDevice object
+        //BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+        // Attempt to connect to the device
+    	Log.v("MainActivity", "devices/connecting");
+    	BluetoothDevice device = null;
+    	
+    	Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+    	// If there are paired devices
+    	if (pairedDevices.size() > 0) {
+    	    // Loop through paired devices
+    	    for (BluetoothDevice adevice : pairedDevices) {
+    	        // Add the name and address to an array adapter to show in a ListView
+    	        //mArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+    	    	if (adevice.getAddress().equals("00:06:66:61:E7:8B")){
+        	    	Log.v("MainActivity", "meh!!!!");
+        	    	device = adevice;
+    	    	}
+    	    	else {
+        	    	Log.v("MainActivity", adevice.getAddress()+" -- "+adevice.getName());
+    	    	}
+    	    }
+    	}
+    	
+    	
+    	//BluetoothDevice device = mBluetoothAdapter.getRemoteDevice();
+        mDataService.connect(device, secure);
+    }
+	
+	
+	
+    
 	
 	
 	
@@ -219,74 +281,9 @@ public class MainActivity extends Activity {
             }
         }
     };
-	
-	
-	
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(DEBUG) Log.d("MainActivity", "onActivityResult " + resultCode);
-        switch (requestCode) {
-        case REQUEST_CONNECT_DEVICE_SECURE:
-            // When DeviceListActivity returns with a device to connect
-            if (resultCode == Activity.RESULT_OK) {
-                connectDevice(data, true);
-            }
-            break;
-        case REQUEST_CONNECT_DEVICE_INSECURE:
-            // When DeviceListActivity returns with a device to connect
-            if (resultCode == Activity.RESULT_OK) {
-                connectDevice(data, false);
-            }
-            break;
-        case REQUEST_ENABLE_BT:
-            // When the request to enable Bluetooth returns
-            if (resultCode == Activity.RESULT_OK) {
-                // Bluetooth is now enabled, so set up a chat session
-                //setupChat();
-                mDataService = new BluetoothDataReceptionService(this, mHandler);
-            } else {
-                // User did not enable Bluetooth or an error occurred
-                Log.d("MainActivity", "BT not enabled");
-                Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        }
-    }
-	
-	
-
-    private void connectDevice(Intent data, boolean secure) {
-        // Get the device MAC address
-        //String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-        // Get the BluetoothDevice object
-        //BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
-        // Attempt to connect to the device
-    	Log.v("MainActivity", "devices/connecting");
-    	BluetoothDevice device = null;
-    	
-    	Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-    	// If there are paired devices
-    	if (pairedDevices.size() > 0) {
-    	    // Loop through paired devices
-    	    for (BluetoothDevice adevice : pairedDevices) {
-    	        // Add the name and address to an array adapter to show in a ListView
-    	        //mArrayAdapter.add(device.getName() + "\n" + device.getAddress());
-    	    	if (adevice.getAddress().equals("00:06:66:61:E7:8B")){
-        	    	Log.v("MainActivity", "meh!!!!");
-        	    	device = adevice;
-    	    	}
-    	    	else {
-        	    	Log.v("MainActivity", adevice.getAddress()+" -- "+adevice.getName());
-    	    	}
-    	    }
-    	}
-    	
-    	
-    	//BluetoothDevice device = mBluetoothAdapter.getRemoteDevice();
-        mDataService.connect(device, secure);
-    }
-	
-	
-	
+    
+    
+    
 	
 }
 

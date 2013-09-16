@@ -3,7 +3,7 @@
     package="com.example.testapplication"
     android:versionCode="1"
     android:versionName="1.0" >
-    
+
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
@@ -26,8 +26,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.testapplication.DisplayMessageActivity"
-            android:label="@string/title_activity_display_message"
+            android:name="com.example.testapplication.ConnectToDevice"
+            android:label="@string/title_activity_connect_to_device"
             android:parentActivityName="com.example.testapplication.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
