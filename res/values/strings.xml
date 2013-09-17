@@ -10,12 +10,27 @@
     
     
     <string name="title_activity_main">MainActivity</string>
-
+    
+    
+    
+    <!-- Connect to Devices Activity -->
+    <string name="title_paired_devices">Paired Devices</string>
+    <string name="title_other_devices">Nearby Devices</string>
+    <string name="button_scan">Scan for Devices Nearby</string>
+    <string name="no_paired_bt_devices">No Paired BT Devices</string>
+    <string name="no_bt_found">No Devices Found Nearby</string>
+    <string name="select_bt_device">Select a Device Nearby</string>
+    <string name="bt_device_scanning">Scanning for Devices</string>
+    
+    
+    
+	<!-- Bluetooth -->
     <string name="title_connecting">connecting#8230;</string>
     <string name="title_not_connected">not connected</string>
     <string name="title_connected_to">connected to someone</string>
 <!-- <string name="title_connected_to">connected to <xliff:g id="device_name">%1$s</xliff:g></string> -->
     <string name="bt_not_enabled_leaving">Bluetooth was not enabled. Leaving Bluetooth Chat.</string>
     <string name="title_activity_connect_to_device">ConnectToDevice</string>
+    
 
 </resources>

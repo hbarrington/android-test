@@ -82,7 +82,7 @@ public class MainActivity extends Activity {
         // If BT is not on, request that it be enabled.
         //  will then be called during onActivityResult
         if (!mBluetoothAdapter.isEnabled()) {
-        	Log.v("MainActivity", "not enabled");
+        	Log.v("MainActivity", "bluetooth not enabled - asking");
 
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
@@ -145,7 +145,6 @@ public class MainActivity extends Activity {
 	            Log.v("MainActivity", "Settings?");
 	            return true;
 	        case R.id.devices:
-	        	Log.v("MainActivity", "Devices");
 	        	intent = new Intent(this, ConnectToDevice.class);
 	        	startActivityForResult(intent, REQUEST_CONNECT_DEVICE);
 	        	return true;
@@ -245,7 +244,7 @@ public class MainActivity extends Activity {
                 switch (msg.arg1) {
                 case BluetoothDataReceptionService.STATE_CONNECTED:
                     setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
-                    mConversationArrayAdapter.clear();
+                    //mConversationArrayAdapter.clear();
                     break;
                 case BluetoothDataReceptionService.STATE_CONNECTING:
                     setStatus(R.string.title_connecting);
@@ -266,7 +265,8 @@ public class MainActivity extends Activity {
                 byte[] readBuf = (byte[]) msg.obj;
                 // construct a string from the valid bytes in the buffer
                 String readMessage = new String(readBuf, 0, msg.arg1);
-                mConversationArrayAdapter.add(mConnectedDeviceName+":  " + readMessage);
+                Log.i("BT", readMessage);
+                //mConversationArrayAdapter.add(mConnectedDeviceName+":  " + readMessage);
                 break;
             case MESSAGE_DEVICE_NAME:
                 // save the connected device's name
