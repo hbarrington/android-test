@@ -6,9 +6,10 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="11"
         android:targetSdkVersion="17" />
 
     <application
@@ -32,6 +33,20 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.testapplication.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.example.testapplication.WelcomeActivity"
+            android:label="@string/title_activity_welcome"
+            android:noHistory="true" >
+        </activity>
+        <activity
+            android:name="com.example.testapplication.LoginActivity"
+            android:label="@string/title_activity_login" 
+            android:noHistory="true" >
+        </activity>
+        <activity
+            android:name="com.example.testapplication.RegisterActivity"
+            android:label="@string/title_activity_register" >
         </activity>
     </application>
 

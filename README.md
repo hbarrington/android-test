@@ -9,11 +9,6 @@ Will get into bluetooth, networking, authentication (consuming a rails+devise en
 * [Networking](http://developer.android.com/training/basics/network-ops/connecting.html)
 * [Location](http://developer.android.com/training/building-userinfo.html)
 
-### Auth - any of the following
-* <http://lucatironi.github.io/tutorial/2012/10/15/ruby_rails_android_app_authentication_devise_tutorial_part_one/>
-* <http://matteomelani.wordpress.com/2011/10/17/authentication-for-mobile-devices/>
-* <http://zyphdesignco.com/blog/simple-auth-token-example-with-devise>
-* <https://gist.github.com/danielgatis/5666941>
 
 ## Already completed
 * [Installation and Setup](http://developer.android.com/sdk/index.html)
@@ -22,6 +17,9 @@ Will get into bluetooth, networking, authentication (consuming a rails+devise en
 
 ### Bluetooth
 * [Bluetooth](http://developer.android.com/guide/topics/connectivity/bluetooth.html) and [class ref](http://developer.android.com/reference/android/bluetooth/package-summary.html)
+
+### Auth - any of the following
+* <http://lucatironi.github.io/tutorial/2012/10/15/ruby_rails_android_app_authentication_devise_tutorial_part_one/>
 
 
 ## Review Later

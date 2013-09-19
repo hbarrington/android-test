@@ -1,34 +1,44 @@
 package com.example.testapplication;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
-import java.util.UUID;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.savagelook.android.UrlJsonAsyncTask;
+//import com.savagelook.android.UrlJsonAsyncTask;
 
 public class MainActivity extends Activity {
 
 	private static final boolean DEBUG = true;
 	
-	public final static String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE"; // good practice to use app name as a key
-
+	public final static String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE"; // good practice to use app name as a key	
+	
 	// Key names received from the BluetoothChatService Handler
     public static final String DEVICE_NAME = "device_name";
     public static final String TOAST = "toast";
+    
+	private static final String EXERCISES_URL = "http://192.168.233.80:3000/api/v1/exercises.json";
+
 	
 	
 	
@@ -42,12 +52,6 @@ public class MainActivity extends Activity {
     // Intent request codes
     private static final int REQUEST_CONNECT_DEVICE = 1;
     private static final int REQUEST_ENABLE_BT = 3;
-    
-    
-    // Array adapter for the conversation thread
-    private ArrayAdapter<String> mConversationArrayAdapter;
-    // Layout Views
-    private ListView mConversationView;
 	
 	
  // Name of the connected device
@@ -57,6 +61,9 @@ public class MainActivity extends Activity {
 	// Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
     private BluetoothDataReceptionService mDataService = null;
+    
+    
+    private SharedPreferences mPreferences;
 	
 	
 	@Override
@@ -70,7 +77,10 @@ public class MainActivity extends Activity {
 			Log.e("MainActivity", "no bluetooth");
 		}
     	Log.v("MainActivity", "create");
-
+    	
+    	//loadExercisesFromAPI(EXERCISES_URL);
+    	mPreferences = getSharedPreferences("CurrentUser", MODE_PRIVATE);
+    	
 	}
 	
 	@Override
@@ -96,8 +106,6 @@ public class MainActivity extends Activity {
             mDataService = new BluetoothDataReceptionService(this, mHandler);
         }
     	Log.v("MainActivity", "start");
-
-		
 	}
 	
 	
@@ -118,6 +126,16 @@ public class MainActivity extends Activity {
             }
         }
         //connectDevice(new Intent(), true);
+        
+        
+        if (mPreferences.contains("AuthToken")){
+        	loadExercisesFromAPI(EXERCISES_URL);
+        } else {
+        	Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
+        	startActivityForResult(intent, 0);
+        }
+        
+        
     }
 	
 	
@@ -151,6 +169,12 @@ public class MainActivity extends Activity {
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
+	}
+	
+	private void loadExercisesFromAPI(String url){
+		GetExercisesTask getExercisesTask = new GetExercisesTask(MainActivity.this);
+		getExercisesTask.setMessageLoading("Loading Exercises...");
+		getExercisesTask.execute(url + "?auth_token=" + mPreferences.getString("AuthToken", ""));
 	}
 	
 	
@@ -255,12 +279,6 @@ public class MainActivity extends Activity {
                     break;
                 }
                 break;
-            case MESSAGE_WRITE:
-                byte[] writeBuf = (byte[]) msg.obj;
-                // construct a string from the buffer
-                String writeMessage = new String(writeBuf);
-                mConversationArrayAdapter.add("Me:  " + writeMessage);
-                break;
             case MESSAGE_READ:
                 byte[] readBuf = (byte[]) msg.obj;
                 // construct a string from the valid bytes in the buffer
@@ -281,6 +299,43 @@ public class MainActivity extends Activity {
             }
         }
     };
+    
+    
+    
+    private class GetExercisesTask extends UrlJsonAsyncTask {
+    	public GetExercisesTask(Context context){
+    		super(context);
+    		Log.v("Main", "temp");
+    	}
+    	
+    	@Override
+        protected void onPostExecute(JSONObject json) {
+            Log.v("MainActivity", json.toString());
+            
+
+            try {
+                JSONArray jsonExercises = json.getJSONArray("exercises");
+                int length = jsonExercises.length();
+                List<String> tasksTitles = new ArrayList<String>(length);
+
+                for (int i = 0; i < length; i++) {
+                	Log.v("MainActivity", jsonExercises.getJSONObject(i).getString("type"));
+                    tasksTitles.add(jsonExercises.getJSONObject(i).getString("type"));
+                }
+
+                ListView exercisesListView = (ListView) findViewById (R.id.exercises_list_view);
+                if (exercisesListView != null) {
+                    exercisesListView.setAdapter(new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, tasksTitles));
+                }
+            } catch (Exception e) {
+            	Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+            } finally {
+            	super.onPostExecute(json);
+            }
+    	}
+    	
+    	
+    }
     
     
     
